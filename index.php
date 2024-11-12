@@ -1,4 +1,18 @@
-<?php require_once('db-connect.php') ?>
+<?php 
+require_once('db-connect.php'); 
+
+// Obține codul calendarului din URL
+$calendar_code = $_GET['calendar_code'] ?? '';
+
+$schedules = $conn->query("SELECT * FROM `schedule_list` WHERE calendar_code = '$calendar_code'");
+$sched_res = [];
+foreach($schedules->fetch_all(MYSQLI_ASSOC) as $row){
+    $row['sdate'] = date("d.m.Y H:i", strtotime($row['start_datetime']));
+    $row['edate'] = date("d.m.Y H:i", strtotime($row['end_datetime']));
+    $sched_res[$row['id']] = $row;
+}
+if(isset($conn)) $conn->close();
+?>                              
 <!DOCTYPE html>
 <html lang="ro">
 
