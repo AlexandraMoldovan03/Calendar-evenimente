@@ -1,0 +1,129 @@
+:root{
+    --mainbl: #4A58F6;
+    --bribl: #212db0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: var(--mainbl);
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    width: 700px;
+    height: 380px;
+}
+
+.slide-out {
+    transform: translateX(-100%); /* Slide to the left */
+}
+
+.card {
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-left: 300px;
+    z-index: 1;
+    justify-items: center;
+}
+
+.image-container {
+    width: 650px;
+    height: 500px;
+    position: absolute;
+    left: -15%;
+    z-index: 1; 
+    justify-self: center;
+    margin-top: 100px;
+}
+
+
+.image-container img {
+    width: 450px; 
+    height: 400px; 
+    object-fit:unset; 
+    border-radius: 20px;
+}
+
+h3 {
+    color: #333;
+    font-size: 1.5em;
+}
+
+p {
+    color: #666;
+    font-size: 1em;
+    margin-bottom: 1.5em;
+}
+
+.btn {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--mainbl);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: var(--bribl);
+}
+
+.btn-secondary {
+    background-color: #cccccc;
+    color: white;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #bbbbbb;
+}
+
+#access-calendar-form {
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+}
+
+.form-group label {
+    font-size: 0.9em;
+    color: var(--bribl);
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+#access-calendar-form .btn-primary {
+    background-color: var(--mainbl);
+    color: white;
+    border: none;
+    font-size: 1em;
+}
+
+#access-calendar-form .btn-primary:hover {
+    background-color: var(--bribl);
+}

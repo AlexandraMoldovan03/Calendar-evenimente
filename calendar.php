@@ -43,71 +43,75 @@ $conn->close();
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,dayGridWeek,list'
-        },
-        selectable: true,
-        editable: true,
-        events: <?php echo json_encode($events); ?>,
-        eventClick: function(info) {
-            alert('Event: ' + info.event.title + '\nDescription: ' + info.event.extendedProps.description);
-        },
-        select: function(info) {
-            var title = prompt('Enter Event Title:');
-            var description = prompt('Enter Event Description:');
-            if (title) {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek', // Vizualizare săptămânală cu intervale orare
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,list'
+                },
+                selectable: true,
+                selectMirror: true,
+                editable: true,
+                slotDuration: '00:30:00', // Interval de 30 de minute
+                events: <?php echo json_encode($events); ?>,
+                
+                eventClick: function(info) {
+                    alert('Event: ' + info.event.title + '\nDescription: ' + info.event.extendedProps.description);
+                },
+                
+                select: function(info) {
+                    var title = prompt('Enter Event Title:');
+                    var description = prompt('Enter Event Description:');
+                    if (title) {
+                        $.ajax({
+                            url: 'save_event.php',
+                            method: 'POST',
+                            data: {
+                                title: title,
+                                description: description,
+                                start_datetime: info.startStr,
+                                end_datetime: info.endStr,
+                                calendar_code: "<?php echo $calendar_code; ?>" // Adăugăm `calendar_code`
+                            },
+                            success: function(response) {
+                                alert('Event added successfully');
+                                calendar.refetchEvents();
+                            }
+                        });
+                    }
+                    calendar.unselect();
+                },
+
+                eventDrop: function(info) {
+                    updateEvent(info.event);
+                },
+                eventResize: function(info) {
+                    updateEvent(info.event);
+                }
+            });
+
+            calendar.render();
+
+            function updateEvent(event) {
                 $.ajax({
                     url: 'save_event.php',
                     method: 'POST',
                     data: {
-                        title: title,
-                        description: description,
-                        start_datetime: info.startStr,
-                        end_datetime: info.endStr,
+                        id: event.id,
+                        title: event.title,
+                        description: event.extendedProps.description,
+                        start_datetime: event.start.toISOString(),
+                        end_datetime: event.end.toISOString(),
                         calendar_code: "<?php echo $calendar_code; ?>" // Adăugăm `calendar_code`
                     },
                     success: function(response) {
-                        alert('Event added successfully');
-                        calendar.refetchEvents();
+                        alert('Event updated successfully');
                     }
                 });
             }
-            calendar.unselect();
-        },
-        eventDrop: function(info) {
-            updateEvent(info.event);
-        },
-        eventResize: function(info) {
-            updateEvent(info.event);
-        }
-    });
-
-    calendar.render();
-
-    function updateEvent(event) {
-        $.ajax({
-            url: 'save_event.php',
-            method: 'POST',
-            data: {
-                id: event.id,
-                title: event.title,
-                description: event.extendedProps.description,
-                start_datetime: event.start.toISOString(),
-                end_datetime: event.end.toISOString(),
-                calendar_code: "<?php echo $calendar_code; ?>" // Adăugăm `calendar_code`
-            },
-            success: function(response) {
-                alert('Event updated successfully');
-            }
         });
-    }
-});
-
     </script>
 </body>
 </html>

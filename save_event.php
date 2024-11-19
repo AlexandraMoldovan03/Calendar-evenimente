@@ -23,9 +23,9 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
 }
 
 if ($conn->query($sql)) {
-    echo "Event saved successfully.";
+    echo "Evenimentul a fost salvat cu succes.";
 } else {
-    echo "Error: " . $conn->error;
+    echo "Eroare: " . $conn->error;
 }
 
 $conn->close();

@@ -1,45 +1,63 @@
 <?php
 require_once('db-connect.php');
 
-// Verificăm dacă numele calendarului a fost trimis prin POST
+// Initialize variables for success message and calendar code
+$calendarCreated = false;
+$calendarCode = "";
+
+// Check if the calendar name was sent via POST
 if (isset($_POST['calendar_name'])) {
     $calendar_name = $_POST['calendar_name'];
 
-    // Generăm un cod unic pentru calendar
+    // Generate a unique code for the calendar
     $calendar_code = uniqid();
 
-    // Salvăm calendarul în baza de date cu numele și codul specificate
+    // Save the calendar to the database with the specified name and code
     $stmt = $conn->prepare("INSERT INTO calendars (name, access_code) VALUES (?, ?)");
     $stmt->bind_param("ss", $calendar_name, $calendar_code);
 
     if ($stmt->execute()) {
-        // Afișăm mesajul cu codul calendarului
-        echo "<h2>Calendarul a fost creat cu succes!</h2>";
-        echo "<p>Codul noului calendar este: <strong>$calendar_code</strong></p>";
-        echo "<p><a href='calendar.php?calendar_code=" . $calendar_code . "'>Accesează calendarul</a></p>";
-        echo "<p>Puteți salva acest cod pentru a accesa calendarul și adăuga evenimente.</p>";
+        // Set variables for success message and calendar code
+        $calendarCreated = true;
+        $calendarCode = $calendar_code;
     } else {
-        echo "Eroare la crearea calendarului. Încercați din nou.";
+        echo "<p>Eroare la crearea calendarului. Încercați din nou.</p>";
     }
 
     $stmt->close();
-} else {
-    echo "Vă rugăm să introduceți un nume pentru calendar.";
 }
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="./css/create_calendar.css">
     <title>Creare Calendar Nou</title>
+    <style>
+        /* Add CSS styles for your container and form */
+    </style>
 </head>
 <body>
-    <h1>Creează un Calendar Nou</h1>
-    <form action="create_calendar.php" method="post">
-        <label for="calendar_name">Nume Calendar:</label>
-        <input type="text" id="calendar_name" name="calendar_name" required>
-        <button type="submit">Creează Calendarul</button>
-    </form>
+    <div class='container'>
+        <div class='container-head'>
+            <h1>Creează un Calendar Nou</h1>
+        </div>
+        <form action="create_calendar.php" method="post">
+            <label for="calendar_name">Nume Calendar:</label>
+            <input type="text" id="calendar_name" name="calendar_name" required>
+            <button type="submit">Creează Calendarul</button>
+        </form>
+
+        <?php if ($calendarCreated): ?>
+            <div class="announcements">
+                <h2>Calendarul a fost creat cu succes!</h2>
+                <p>Codul noului calendar este: <strong><?php echo htmlspecialchars($calendarCode); ?></strong></p>
+                <p><a href="calendar.php?calendar_code=<?php echo urlencode($calendarCode); ?>">Accesează calendarul</a></p>
+                <p>Puteți salva acest cod pentru a accesa calendarul și adăuga evenimente.</p>
+            </div>
+        <?php endif; ?>
+    </div>
 </body>
 </html>
